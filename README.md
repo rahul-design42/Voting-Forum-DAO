@@ -1,6 +1,7 @@
 # Voting Forum DAO: Transparent Institutional Terminal
 
-![DAO Banner](<!-- Add your project banner image url here -->)
+<img width="312" height="97" alt="image" src="https://github.com/user-attachments/assets/01ddd179-74e2-4eb7-af50-129d778ff8c4" />
+
 
 ---
 
@@ -55,7 +56,7 @@ Authorised administrators can conclude an active vote. The contract evaluates th
 
 > **Watch the full platform walkthrough below:**
 > 
-> [![Voting Forum DAO Demo](<!-- Add video thumbnail image url here -->)](<!-- Add your video link/URL here -->)
+> 
 > *(Click the image above to watch the video demo)*
 
 ---
@@ -63,15 +64,18 @@ Authorised administrators can conclude an active vote. The contract evaluates th
 ## Screenshots
 
 ### Main Dashboard & Active Votes
-<img width="800" alt="Dashboard View Placeholder" src="<!-- Add Dashboard Screenshot URL here -->" />
+<img width="1919" height="873" alt="image" src="https://github.com/user-attachments/assets/4a9928f7-b797-4fe8-8f4c-e48c7fbafd05" />
+
 *Overview of the network governance statistics and the latest active proposals.*
 
 ### Proposal Creation
-<img width="800" alt="Create Proposal Placeholder" src="<!-- Add Create Proposal Screenshot URL here -->" />
+<img width="1919" height="866" alt="image" src="https://github.com/user-attachments/assets/a0101f49-ffdc-45de-928b-270d981f253b" />
+
 *The drafting terminal where users propose ecosystem grants and require funding.*
 
 ### Voting UX & Finalization
-<img width="800" alt="Voting UX Placeholder" src="<!-- Add Voting UX Screenshot URL here -->" />
+<img width="892" height="398" alt="image" src="https://github.com/user-attachments/assets/bdf421ea-cbcf-4b53-9a08-67793ddb1da4" />
+
 *Detail of the progress bars and the persistent "You voted Yes" UX.*
 
 ---
