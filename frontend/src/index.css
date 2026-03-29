@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────── RESET ───────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #F8FAF9;
+  color: #111C18;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #F0F4F2; }
+::-webkit-scrollbar-thumb { background: #C8D9D2; border-radius: 99px; }
+:focus-visible { outline: 2px solid #10B981; outline-offset: 3px; border-radius: 4px; }
+
+/* ─────────── CARDS ─────────── */
+.card {
+  background: #FFFFFF;
+  border: 1px solid #E4EBE8;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 28px rgba(16,185,129,0.07);
+  transform: translateY(-2px);
+}
+.card-flat {
+  background: #FFFFFF;
+  border: 1px solid #E4EBE8;
+  border-radius: 14px;
+}
+
+/* ─────────── BUTTONS ─────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: #10B981;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(16,185,129,0.3);
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+  white-space: nowrap;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #059669;
+  box-shadow: 0 2px 10px rgba(16,185,129,0.45);
+  transform: translateY(-1px);
+}
+.btn-primary:active:not(:disabled) { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #4A5E58;
+  background: transparent;
+  border: 1px solid #D1D9D5;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.btn-ghost:hover:not(:disabled) { background: #F0F4F2; border-color: #B4C4BC; }
+.btn-ghost:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ─────────── INPUTS ─────────── */
+.input-field {
+  width: 100%;
+  background: #F8FAF9;
+  border: 1.5px solid #D8E5DF;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #111C18;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.input-field::placeholder { color: #A8BCB5; }
+.input-field:focus {
+  border-color: #10B981;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+}
+
+/* ─────────── BADGE ─────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.badge-active   { background:#D1FAE5; color:#065F46; }
+.badge-passed   { background:#D1FAE5; color:#047857; }
+.badge-rejected { background:#FEE2E2; color:#991B1B; }
+.badge-id       { background:#F0F4F2; color:#6B7F78; }
+
+/* ─────────── VOTE BAR ─────────── */
+.vote-bar { height: 6px; border-radius: 999px; background: #EEF2F0; overflow: hidden; }
+.vote-bar-for     { background: #10B981; border-radius: 999px; height: 100%; }
+.vote-bar-against { background: #EF4444; border-radius: 999px; height: 100%; float: right; }
+
+/* ─────────── SKELETON ─────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #EEF2F0 25%, #F7FAF8 50%, #EEF2F0 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* ─────────── UTILS ─────────── */
+.text-primary   { color: #111C18; }
+.text-secondary { color: #4A5E58; }
+.text-muted     { color: #8A9E98; }
+.divider        { border: none; border-top: 1px solid #E4EBE8; }
+.tag            { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #8A9E98; }
+
+/* ─────────── ANIMATIONS ─────────── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.anim-fade-up { animation: fadeUp 0.4s ease forwards; }
