@@ -1,22 +1,84 @@
-# Voting Forum DAO
+# Voting Forum DAO: Transparent Institutional Terminal
+
+![DAO Banner](<!-- Add your project banner image url here -->)
 
 ---
 
 ## Table of Contents
 
-- [Project Title](#voting-forum-dao)
-- [Project Description](#project-description)
-- [Project Vision](#project-vision)
-- [Key Features](#key-features)
+- [Overview](#overview)
+- [Application Features \& Functionality](#application-features--functionality)
+- [Video Demo](#video-demo)
+- [Screenshots](#screenshots)
+- [Smart Contract Architecture](#smart-contract-architecture)
 - [Future Scope](#future-scope)
 
 ---
 
-## Project Description
+## Overview
 
-**Voting Forum DAO** is a decentralised autonomous organisation (DAO) smart contract built on the **Stellar blockchain** using the **Soroban SDK**. It provides a transparent, on-chain governance forum where community members can submit proposals, cast votes, and collectively decide outcomes — without any centralised authority controlling the process.
+**Voting Forum DAO** is a decentralised autonomous organisation (DAO) built on the **Stellar blockchain** using the **Soroban SDK**. It provides a transparent, on-chain governance forum where community members can submit proposals, cast votes, and collectively decide outcomes without centralised authority.
 
-The contract exposes four core functions:
+The frontend has been completely overhauled into a **Transparent DAO Institutional Terminal**—a sleek, modern, and data-rich interface designed for professional governance and ecosystem administration.
+
+---
+
+## Application Features & Functionality
+
+### 1. Dashboard & Live Statistics
+The main dashboard gives an instant overview of the DAO's health. It tracks total proposals, active votes, passed proposals, and rejected proposals, pulling real-time aggregate data directly from the Soroban smart contract.
+
+### 2. Proposal Creation & Funding
+Any community member can draft and publish a new governance proposal.
+- **Title & Description:** Clean inputs for proposing network parameters, core protocol upgrades, or ecosystem grants.
+- **Required Funding Field:** A dedicated field allows users to request XLM funding. This data is seamlessly formatted and appended to the on-chain description payload for full transparency.
+
+### 3. Interactive Voting & Vote Caching
+Voters can browse active proposals and cast directional votes (Yes / No).
+- **Progress Tracking:** Every proposal card dynamically calculates and displays a "Yes" percentage and a "Quorum" percentage bar based on total network participation.
+- **Persistent UX:** Once a vote is cast via the Freighter wallet, the choice is cached locally. The voting buttons are replaced with a persistent, clean success badge acknowledging the exact choice made, preventing UX clutter.
+
+### 4. Search & Filtering
+A global search bar located in the header allows users to instantly filter the list of active proposals by title, working seamlessly across different views and pagination limits.
+
+### 5. Multi-View Navigation 
+The application features a robust state-based routing system without heavy page reloads:
+- **Active Votes Feed:** A dedicated view to see all historical and active proposals without the dashboard constraints.
+- **Placeholder Ecosystem Modules:** Beautifully designed mock-up views for future modules like *Treasury*, *Delegation*, *Analytics*, and *Settings*, ensuring the institutional aesthetic remains unified as the DAO scales.
+
+### 6. Admin Finalization
+Authorised administrators can conclude an active vote. The contract evaluates the tallies and mathematically auto-accepts or auto-rejects the proposal based on the final count. The frontend provides a clear **"Finalize"** action lock specifically for this immutable state transition.
+
+---
+
+## Video Demo
+
+> **Watch the full platform walkthrough below:**
+> 
+> [![Voting Forum DAO Demo](<!-- Add video thumbnail image url here -->)](<!-- Add your video link/URL here -->)
+> *(Click the image above to watch the video demo)*
+
+---
+
+## Screenshots
+
+### Main Dashboard & Active Votes
+<img width="800" alt="Dashboard View Placeholder" src="<!-- Add Dashboard Screenshot URL here -->" />
+*Overview of the network governance statistics and the latest active proposals.*
+
+### Proposal Creation
+<img width="800" alt="Create Proposal Placeholder" src="<!-- Add Create Proposal Screenshot URL here -->" />
+*The drafting terminal where users propose ecosystem grants and require funding.*
+
+### Voting UX & Finalization
+<img width="800" alt="Voting UX Placeholder" src="<!-- Add Voting UX Screenshot URL here -->" />
+*Detail of the progress bars and the persistent "You voted Yes" UX.*
+
+---
+
+## Smart Contract Architecture
+
+The core logic lives entirely on-chain. Trust is replaced by verifiability.
 
 | Function | Actor | Purpose |
 |---|---|---|
@@ -26,65 +88,14 @@ The contract exposes four core functions:
 | `view_proposal(proposal_id)` | Anyone | Read the full state of any proposal by its ID |
 | `view_forum_stats()` | Anyone | Read aggregate statistics across all proposals |
 
-Proposals **pass** when `votes_for > votes_against` at the time of closing. All data — vote counts, timestamps, outcomes — lives fully on-chain and is immutable once recorded.
-
----
-
-## Project Vision
-
-The vision behind Voting Forum DAO is to make **decentralised community governance accessible, transparent, and tamper-proof** for any organisation, protocol, or community that wants to move beyond back-room decision-making.
-
-By anchoring every proposal, vote, and outcome on the Stellar blockchain:
-
-- **No single actor** can alter votes or override outcomes.
-- **Every decision** is permanently auditable by anyone.
-- **Trust is replaced by verifiability** — members don't have to trust the DAO admin; they can verify every state change on-chain.
-
-The long-term vision is a thriving DAO ecosystem where communities of any size — from small DAOs of a dozen members to large protocols with thousands of token holders — can govern themselves with confidence, using this contract as their governance backbone.
-
----
-
-## Key Features
-
-- **On-Chain Proposal Submission** — Any member can create a proposal with a title and description. Each proposal is assigned a unique, auto-incremented ID and timestamped at creation using the Stellar ledger clock.
-
-- **Directional Voting** — Voters cast either a FOR (`true`) or AGAINST (`false`) vote on any active proposal. Vote counts accumulate transparently in contract storage.
-
-- **Proposal Lifecycle Management** — Proposals begin in an `is_active = true` state. Once `close_proposal` is called, the contract evaluates the vote tally, marks the proposal as passed or rejected, and locks it from further voting.
-
-- **Global Forum Statistics** — The `view_forum_stats` function returns a live aggregate of total, active, passed, and rejected proposals — giving a real-time dashboard view of DAO health.
-
-- **Default-Safe Storage** — All storage reads use safe `unwrap_or` defaults, ensuring the contract never panics on missing keys and always returns a well-defined value.
-
-- **Soroban-Native Design** — Built entirely with `soroban-sdk` primitives (`symbol_short!`, `contracttype`, `contractimpl`, ledger timestamps, instance storage with TTL extension) following idiomatic Soroban patterns.
+**Contract ID:** `CAVULOTLV6XDIVSRIEUWGBHGORKEVWUNVLDBHIXXKVXDA5RKVQFJIVIY`
 
 ---
 
 ## Future Scope
 
-The current contract is a minimal, auditable governance core. Planned enhancements include:
-
-- **Token-Weighted Voting** — Integrate with a Stellar token contract (SEP-41 / SAC) so that a member's voting power is proportional to their token balance, preventing Sybil attacks.
-
-- **Quorum Requirements** — Enforce a minimum participation threshold (e.g., ≥ 10% of circulating supply must vote) before a proposal can be closed and counted as valid.
-
-- **Voting Deadlines** — Attach a ledger-sequence or timestamp deadline to each proposal so that voting closes automatically without a manual admin call.
-
-- **Delegation / Proxy Voting** — Allow token holders to delegate their vote to a trusted representative, enabling participation even when members are inactive.
-
-- **Role-Based Access Control** — Introduce admin, moderator, and member roles with different permission levels (e.g., only admins can close proposals, only verified members can create them).
-
-- **Multi-Choice Proposals** — Extend beyond binary FOR/AGAINST to support ranked-choice or multiple-option proposals for richer community decision-making.
-
-- **On-Chain Treasury Integration** — Link passed proposals to automatic fund disbursements from a DAO treasury contract, enabling trustless grant and bounty execution.
-
-- **Event Emission** — Emit structured Soroban events on proposal creation, vote casting, and proposal closure so that off-chain indexers and frontends can react in real time.
-
----
-
-## Contract Details:
-Contract ID: CAVULOTLV6XDIVSRIEUWGBHGORKEVWUNVLDBHIXXKVXDA5RKVQFJIVIY
-<img width="1919" height="870" alt="image" src="https://github.com/user-attachments/assets/23b72fa0-79b4-47e3-aab2-4780e2094b06" />
-
+- **Token-Weighted Voting:** Integrate SEP-41 token contracts to make voting power proportional to token balance.
+- **Quorum Enforcement:** Strict on-chain participation minimums before a proposal can successfully pass.
+- **Automated Treasury Execution:** Link passed ecosystem grants directly to an automated disbursement treasury contract.
 
 > Built with ❤️ on [Stellar](https://stellar.org) using the [Soroban SDK](https://soroban.stellar.org).

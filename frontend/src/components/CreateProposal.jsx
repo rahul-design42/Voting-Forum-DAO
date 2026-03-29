@@ -2,12 +2,13 @@ import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { PubKeyContext } from '../App';
 import { createProposal } from '../utils/Soroban';
-import { Send, Loader2, AlertCircle, FilePlus2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 export function CreateProposal({ onProposalCreated }) {
   const pubKey   = useContext(PubKeyContext);
   const [title, setTitle]     = useState('');
   const [desc, setDesc]       = useState('');
+  const [funding, setFunding] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
   const [success, setSuccess] = useState(false);
@@ -15,12 +16,15 @@ export function CreateProposal({ onProposalCreated }) {
   const handleCreate = async (e) => {
     e.preventDefault();
     if (!pubKey) { setError('Connect your wallet first.'); return; }
-    console.log(`[CreateProposal] Creating proposal: title="${title}", desc="${desc}"`);
+    
+    const finalDesc = funding.trim() ? `${desc}\n\nRequired Funding: ${funding.trim()} XLM` : desc;
+    
+    console.log(`[CreateProposal] Creating proposal: title="${title}", desc="${finalDesc}"`);
     setLoading(true); setError(''); setSuccess(false);
     try {
-      const result = await createProposal(pubKey, title, desc);
+      const result = await createProposal(pubKey, title, finalDesc);
       console.log("[CreateProposal] Proposal created successfully, result:", result);
-      setTitle(''); setDesc('');
+      setTitle(''); setDesc(''); setFunding('');
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
       if (onProposalCreated) onProposalCreated();
@@ -33,69 +37,93 @@ export function CreateProposal({ onProposalCreated }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.15, duration: 0.35 }}
-      className="card overflow-hidden sticky top-4"
-    >
-      {/* Panel header */}
-      <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
-        <FilePlus2 size={16} className="text-emerald-600" />
-        <div>
-          <h2 className="text-sm font-bold text-primary">New Proposal</h2>
-          <p className="text-xs text-muted mt-0.5">Submit governance on-chain</p>
-        </div>
-      </div>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl font-bold text-primary tracking-tight">New Proposal</h2>
+      
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.15, duration: 0.35 }}
+        className="card p-6 border-t-4 border-t-blue-500"
+      >
+        <form onSubmit={handleCreate} className="flex flex-col gap-5">
+          {/* Wallet warning */}
+          {!pubKey && (
+            <div className="flex items-start gap-2 text-amber-800 bg-amber-50 border border-amber-200 px-3 py-2 rounded-lg text-[11px] font-medium leading-tight">
+              <AlertCircle size={14} className="shrink-0 mt-0.5" />
+              Connect your Freighter Wallet to Draft a Proposal.
+            </div>
+          )}
 
-      <div className="p-5 flex flex-col gap-4">
-        {/* Wallet warning */}
-        {!pubKey && (
-          <div className="flex items-start gap-2 text-amber-800 bg-amber-50 border border-amber-200 px-3.5 py-2.5 rounded-lg text-xs">
-            <AlertCircle size={14} className="shrink-0 mt-0.5" />
-            Connect Freighter Wallet to create proposals.
-          </div>
-        )}
-
-        <form onSubmit={handleCreate} className="flex flex-col gap-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-secondary mb-1.5" htmlFor="proposal-title">
-              Title
+            <label className="block text-[10px] font-bold text-secondary uppercase tracking-wider mb-2" htmlFor="proposal-title">
+              Proposal Title
             </label>
             <input
               id="proposal-title"
               type="text"
-              className="input-field"
-              placeholder="Short, descriptive title"
+              className="input-field bg-slate-50"
+              placeholder="e.g. Upgrade SDK for Rust 1.70"
               value={title}
               onChange={e => setTitle(e.target.value)}
               disabled={loading || !pubKey}
               maxLength={60}
               required
             />
-            <p className="text-[11px] text-muted text-right mt-1">{title.length}/60</p>
+          </div>
+
+          {/* Category Dropdown (Simulated visual only) */}
+          <div>
+            <label className="block text-[10px] font-bold text-secondary uppercase tracking-wider mb-2">
+              Category
+            </label>
+            <select className="input-field bg-slate-50 text-sm appearance-none" disabled={loading || !pubKey}>
+              <option>Network Parameter</option>
+              <option>Ecosystem Grant</option>
+              <option>Core Protocol</option>
+            </select>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-secondary mb-1.5" htmlFor="proposal-desc">
-              Description
+            <label className="block text-[10px] font-bold text-secondary uppercase tracking-wider mb-2" htmlFor="proposal-desc">
+              Short Description
             </label>
             <textarea
               id="proposal-desc"
-              className="input-field"
-              style={{ minHeight: 110, resize: 'none' }}
-              placeholder="Explain the rationale, expected impact, and steps..."
+              className="input-field bg-slate-50 text-sm leading-relaxed"
+              style={{ minHeight: 90, resize: 'none' }}
+              placeholder="Describe the purpose and impact of this proposal..."
               value={desc}
               onChange={e => setDesc(e.target.value)}
               disabled={loading || !pubKey}
               maxLength={300}
               required
             />
-            <p className={`text-[11px] text-right mt-1 ${(300 - desc.length) < 30 ? 'text-red-500' : 'text-muted'}`}>
-              {300 - desc.length} chars remaining
-            </p>
+          </div>
+
+          {/* Required Funding */}
+          <div>
+            <label className="block text-[10px] font-bold text-secondary uppercase tracking-wider mb-2" htmlFor="proposal-funding">
+              Required Funding (Optional)
+            </label>
+            <div className="relative">
+              <input
+                id="proposal-funding"
+                type="number"
+                min="0"
+                step="any"
+                className="input-field bg-slate-50 text-sm pr-12"
+                placeholder="0.00"
+                value={funding}
+                onChange={e => setFunding(e.target.value)}
+                disabled={loading || !pubKey}
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">
+                XLM
+              </span>
+            </div>
           </div>
 
           {/* Error */}
@@ -110,29 +138,23 @@ export function CreateProposal({ onProposalCreated }) {
             <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }}
               className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-lg text-center"
             >
-              ✓ Proposal deployed to chain!
+              ✓ Proposal drafted successfully!
             </motion.div>
           )}
 
           <button
             type="submit"
-            className="btn-primary w-full"
+            className="btn-primary w-full py-3 shadow-md border border-blue-600/20"
             disabled={loading || !pubKey || !title.trim() || !desc.trim()}
           >
-            {loading
-              ? <><Loader2 size={15} className="animate-spin" /> Submitting…</>
-              : <><Send size={15} /> Deploy Proposal</>
-            }
+            {loading ? <Loader2 size={16} className="animate-spin" /> : 'Publish Draft'}
           </button>
+          
+          <p className="text-[10px] text-center text-slate-400 italic">
+            Drafting a proposal requires a minimum stake of 1,000 XLM to prevent network spam.
+          </p>
         </form>
-
-        {/* Footer tags */}
-        <div className="pt-1 flex items-center gap-3 justify-center">
-          {['Transparent', 'Immutable', 'On-Chain'].map(t => (
-            <span key={t} className="tag">{t}</span>
-          ))}
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

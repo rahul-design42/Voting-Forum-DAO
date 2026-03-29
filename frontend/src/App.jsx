@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
 import { ProposalsList } from './components/ProposalsList';
 import { CreateProposal } from './components/CreateProposal';
+import { 
+  ActiveVotesView, HistoryView, DelegationView, 
+  SettingsView, EcosystemView, TreasuryView, AnalyticsView 
+} from './components/Views';
 import { Shield } from 'lucide-react';
 
 export const PubKeyContext = React.createContext();
@@ -12,70 +17,94 @@ function App() {
   const [pubKey, setPubKey]   = useState('');
   const [stats, setStats]     = useState({ total:0, active:0, passed:0, rejected:0 });
   const [refresh, setRefresh] = useState(0);
+  const [currentView, setCurrentView] = useState('Dashboard');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  return (
-    <div className="min-h-screen text-primary" style={{ background: '#F8FAF9' }}>
-      <div className="w-full max-w-[1440px] mx-auto px-6 py-8 md:px-12 md:py-12">
-        <PubKeyContext.Provider value={pubKey}>
-
-          {/* Navigation Header */}
-          <Header pubKey={pubKey} setPubKey={setPubKey} />
-
-          {/* Hero Section */}
-          <motion.section
-            initial={{ opacity:0, y:14 }}
-            animate={{ opacity:1, y:0 }}
-            transition={{ delay:0.08, duration:0.4 }}
-            className="card mb-10 px-10 py-12 bg-white flex flex-col items-center text-center w-full"
-            style={{ borderTop: '4px solid #10B981' }}
-            aria-label="Hero section"
-          >
-            <div className="flex flex-col items-center justify-center gap-4">
-              <span className="tag flex items-center gap-1 mb-2 bg-emerald-50 px-3 py-1.5 rounded-full text-emerald-700 font-bold tracking-wide">
-                <Shield size={12} className="text-emerald-500" /> Stellar Blockchain · Soroban
-              </span>
-              <h1 className="text-3xl md:text-5xl font-extrabold text-primary mb-2 tracking-tight">
-                Decentralised Governance Forum
+  const renderView = () => {
+    switch(currentView) {
+      case 'Active Votes': return <ActiveVotesView setGlobalStats={setStats} refreshTrigger={refresh} searchQuery={searchQuery} />;
+      case 'History':      return <HistoryView />;
+      case 'Delegation':   return <DelegationView />;
+      case 'Settings':     return <SettingsView />;
+      case 'Ecosystem':    return <EcosystemView />;
+      case 'Treasury':     return <TreasuryView />;
+      case 'Analytics':    return <AnalyticsView />;
+      case 'Dashboard':
+      default:
+        return (
+          <>
+            {/* Page Title & Subtitle */}
+            <div className="mb-8">
+              <h1 className="text-3xl md:text-4xl font-bold text-primary tracking-tight mb-2">
+                Network Governance
               </h1>
-              <p className="text-base md:text-lg text-secondary max-w-2xl leading-relaxed">
-                Create proposals, cast votes, and collectively shape community decisions — transparently on-chain with no central authority.
+              <p className="text-secondary opacity-90 text-sm md:text-base max-w-2xl">
+                Decentralized oversight of the Soroban network parameters and ecosystem development grants. Transparency through cryptography.
               </p>
             </div>
-          </motion.section>
 
-          {/* Stats Dashboard */}
-          <Dashboard stats={stats} />
+            {/* Stats Dashboard */}
+            <Dashboard stats={stats} />
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-            {/* Proposals feed */}
-            <div className="lg:col-span-3 flex flex-col gap-5">
-              <div className="flex items-center justify-between px-2">
-                <h2 className="text-xl font-bold text-primary">Live Proposals</h2>
-                <span className="bg-white border rounded-full px-3 py-1 text-xs font-semibold shadow-sm">{stats.total} total</span>
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8 xl:gap-12">
+              {/* Proposals feed (Left column) */}
+              <div className="flex flex-col gap-5">
+                <ProposalsList 
+                  setGlobalStats={setStats} 
+                  refreshTrigger={refresh} 
+                  limit={3} 
+                  searchQuery={searchQuery}
+                  onViewAll={() => setCurrentView('Active Votes')} 
+                />
               </div>
-              <ProposalsList setGlobalStats={setStats} refreshTrigger={refresh} />
+
+              {/* Sidebar/Forms (Right column) */}
+              <div className="flex flex-col gap-6">
+                <CreateProposal onProposalCreated={() => setRefresh(r => r + 1)} />
+                
+                {/* Delegate Voting Power Promo Card */}
+                <div className="card bg-blue-50/50 border-blue-100 p-6 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+                    <Shield size={20} className="text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm text-primary mb-1">Delegate your voting power</h3>
+                    <p className="text-xs text-secondary leading-relaxed mb-3">
+                      Don't have time to review every proposal? Delegate to a trusted community expert.
+                    </p>
+                    <button onClick={() => setCurrentView('Delegation')} className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                      Browse Delegates &rarr;
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
+          </>
+        );
+    }
+  };
 
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <CreateProposal onProposalCreated={() => setRefresh(r => r + 1)} />
-            </div>
-          </div>
+  return (
+    <PubKeyContext.Provider value={pubKey}>
+      <div className="layout-container font-sans text-primary">
+        
+        {/* Sidebar Left */}
+        <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
 
-          {/* Footer */}
-          <footer className="mt-12 pt-6 border-t border-gray-200 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs text-muted">
-              Built on <a href="https://stellar.org" target="_blank" rel="noreferrer" className="text-emerald-600 font-semibold hover:underline">Stellar</a> using the Soroban SDK
-            </p>
-            <p className="font-mono text-[10px] text-gray-300 tracking-wider">
-              CONTRACT: CAVULOT…QFJIVIY
-            </p>
-          </footer>
+        {/* Main Content Area */}
+        <div className="main-content">
+          
+          {/* Top Header */}
+          <Header pubKey={pubKey} setPubKey={setPubKey} currentView={currentView} setCurrentView={setCurrentView} setSearchQuery={setSearchQuery} />
 
-        </PubKeyContext.Provider>
+          {/* Page Content */}
+          <main className="px-8 py-8 md:px-12 w-full max-w-7xl mx-auto">
+            {renderView()}
+          </main>
+        </div>
       </div>
-    </div>
+    </PubKeyContext.Provider>
   );
 }
 
