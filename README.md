@@ -52,15 +52,6 @@ Authorised administrators can conclude an active vote. The contract evaluates th
 
 ---
 
-## Video Demo
-
-> **Watch the full platform walkthrough below:**
-> 
-> 
-> *(Click the image above to watch the video demo)*
-
----
-
 ## Screenshots
 
 ### Main Dashboard & Active Votes
